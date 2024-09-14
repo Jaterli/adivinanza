@@ -8,27 +8,45 @@ terminará su ejecución.
 */
 
 use rand::Rng;
-use text_io::read;
+use std::io;
+use std::str::FromStr;
 
 fn main() {    
 
-    let random_num = rand::thread_rng().gen_range(0..100);
+    println!("Adivina el número!");
+    
+    // Generar un número entre 1 y 100
+    let secret_num: i32 = rand::thread_rng().gen_range(0..100);
 
-    loop{
-        println!("Ingresa un entero de 1 a 99 (0 para terminar): ");
-        let i: i32 = read!();
+    loop {
+        println!("Por favor, ingresa un número: ");
 
-        if i == 0 {
-            println!("Finalizó el programa.\nEl número a adivinar era {random_num}");
+        // Capturar la entrada del usuario como una cadena
+        let mut num: String = String::new();
+        io::stdin().read_line(&mut num).expect("Error al leer la línea");
+
+        // Intentar convertir la cadena a un número
+        let num: i32 = match i32::from_str(num.trim()) {
+            Ok(num) => num,
+            Err(_) => {
+                println!("Error: Valor ingresado no es un número válido.");
+                continue; // Vuelve al inicio del bucle para pedir un nuevo valor
+            }
+        };
+
+        if num == 0 {
+            println!("El número secreto era {secret_num}");
             break;
-        } else if i > random_num {
-            println!("{i} > número a adivinar");
-        } else if i < random_num{
-            println!("{i} < número a adivinar");
+        } 
+        if num > secret_num {
+            println!("{num} > número secreto");
+        } else if num < secret_num {
+            println!("{num} < número secreto");
         } else {
-            println!("{i} == número a adivinar\nEl programa ha finalizado");
-
+            println!("{num} == número secreto");
             break;
         }
     }
+
+    println!("El programa ha finalizado!");
 }
