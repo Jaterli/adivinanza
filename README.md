@@ -13,6 +13,7 @@
 - Dependencias:
   - rand = "0.8.5"
   - text_io = "0.1.12"
+  - colored = "2.0.0"
 
    
 Para echar a correr ejecutar: `cargo run`
