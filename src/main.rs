@@ -9,44 +9,79 @@ terminará su ejecución.
 
 use rand::Rng;
 use std::io;
-use std::str::FromStr;
+use std::cmp::*; // Importa funciones de comparación
+use colored::*; // Importa las funciones necesarias para aplicar colores a cadenas
 
 fn main() {    
 
-    println!("Adivina el número!");
+    println!("Adivina el número entre 1 y 100");
     
-    // Generar un número entre 1 y 100
-    let secret_num: i32 = rand::thread_rng().gen_range(0..100);
+    // Generar un número entre 1 y 100 (incluyendo ambos límites)
+    let secret_num: u32 = rand::thread_rng().gen_range(1..=100);
 
     loop {
-        println!("Por favor, ingresa un número: ");
+        println!("Por favor, ingresa un número o pulsa 0 para terminar: ");
 
-        // Capturar la entrada del usuario como una cadena
-        let mut num: String = String::new();
-        io::stdin().read_line(&mut num).expect("Error al leer la línea");
+        // Capturar la entrada del usuario en una variable mutable de tipo string
+        let mut my_num = String::new();
+        io::stdin().read_line(&mut my_num).expect("Error al leer la línea");
 
         // Intentar convertir la cadena a un número
-        let num: i32 = match i32::from_str(num.trim()) {
-            Ok(num) => num,
-            Err(_) => {
-                println!("Error: Valor ingresado no es un número válido.");
-                continue; // Vuelve al inicio del bucle para pedir un nuevo valor
+        let my_num: u32 = match my_num.trim().parse(){
+            Ok(num) => num, // Si el número es válido, asignarlo a my_num
+            Err(_) => { // Si no es válido, mostrar mensaje y continuar
+                println! ("Tipo no válido"); 
+                continue;
             }
         };
 
-        if num == 0 {
+        // Si ingresamos 0, el programa finaliza.
+        if my_num == 0 {
             println!("El número secreto era {secret_num}");
             break;
         } 
-        if num > secret_num {
-            println!("{num} > número secreto");
-        } else if num < secret_num {
-            println!("{num} < número secreto");
-        } else {
-            println!("{num} == número secreto");
-            break;
+
+        // Comparamos el número introducido con el generado por el ordenador
+        match my_num.cmp(&secret_num){
+            Ordering::Less => println!("{}","Tú número es inferior al número secreto".red()),
+            Ordering::Greater => println!("{}","Tú número es superior al número secreto".red()),
+            Ordering::Equal => {
+                println!("{} {}", "¡Adivinaste!, el número secreto es".green(), secret_num.to_string().green());
+                break;
+            },
         }
     }
 
     println!("El programa ha finalizado!");
 }
+
+
+/* 
+// Versión simplificada, sin control de errores
+
+use rand::Rng;
+use text_io::read;
+
+fn main() {    
+
+    let secret_num: i32 = rand::thread_rng().gen_range(0..100);
+
+    loop{
+        println!("Ingresa un número: ");
+        let i: i32 = read!()
+
+        if i == 0 {
+            println!("El programa ha finalizado!\nEl número secreto era {secret_num}");
+            break;
+        } 
+        if i > secret_num {
+            println!("{i} > número secreto");
+        } else if i < secret_num{
+            println!("{i} < número secreto");
+        } else {
+            println!("{i} == número secreto\nEl programa ha finalizado!");
+            break;
+        }
+    }
+}
+*/
